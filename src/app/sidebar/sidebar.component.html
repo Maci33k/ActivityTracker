@@ -1,0 +1,13 @@
+<div id="mySidebar" class="sidebar" [ngStyle]="{'width': sidebarOpen ? '250px' : '0'}">
+  <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
+  <a href="#">OPCJA 1</a>
+  <a href="#">OPCJA 2</a>
+  <a href="#">OPCJA 3</a>
+  <a href="#">OPCJA 4</a>
+  AAAAAAAAAAAAAAAAAAAAAa
+</div>
+
+<div id="main" [ngStyle]="{'marginLeft': sidebarOpen ? '250px' : '0'}">
+  <button class="openbtn" (click)="openNav()">&#9776;</button>
+
+</div>
