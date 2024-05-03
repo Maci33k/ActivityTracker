@@ -7,3 +7,7 @@ Web application for a thesis of an engineering degree about tracking physical ac
 # Frontend
 - Stworzony ruchomy navbar
 - ----------------------------------------------------------------------
+
+# Wersja 0.2 03.05.2024
+# Frontend
+- Dopracowany wygląd side bara i działająca animacja. Ikonki zmieniają swoje rozmiary i położenie dynamicznie
