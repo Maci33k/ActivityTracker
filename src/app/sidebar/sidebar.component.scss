@@ -61,3 +61,56 @@
   .sidebar {padding-top: 15px;}
   .sidebar a {font-size: 18px;}
 }
+
+.icon-small {
+  color: white;
+  font-size: 2em;
+  transition: font-size 0.5s ease;
+}
+
+.icon-small:hover {
+  cursor: pointer;
+}
+
+.icon-big {
+  color: white;
+  font-size: 4.5em;
+  transition: font-size 0.5s ease;
+}
+
+.icon-big:hover {
+  cursor: pointer;
+}
+
+.option {
+  width: auto;
+  height: 10%;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15%;
+}
+
+.option-name {
+  color: white;
+  transition: opacity 0.5s ease; /* Dodaj animację pojawiania się */
+  font-size: 1em;
+}
+
+.empty-space {
+  widht: auto;
+  height: 10%;
+}
+
+.expanded-option {
+  height: 5em;
+  padding: 10%;
+}
+
+.two-last-options-container {
+  display: flex;
+  flex-direction: row;
+  direction: rtl;
+}

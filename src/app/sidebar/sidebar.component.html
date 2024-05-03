@@ -1,13 +1,29 @@
-<div id="mySidebar" class="sidebar" [ngStyle]="{'width': sidebarOpen ? '250px' : '0'}">
+<div id="mySidebar" class="sidebar" [ngStyle]="{'width': sidebarOpen ? '15%' : '7%'}">
   <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
-  <a href="#">OPCJA 1</a>
-  <a href="#">OPCJA 2</a>
-  <a href="#">OPCJA 3</a>
-  <a href="#">OPCJA 4</a>
-  AAAAAAAAAAAAAAAAAAAAAa
+  <ng-container *ngFor="let icon of icons; let i = index">
+    <div *ngIf="(i!== 4 && !sidebarOpen) || (i < 4 && sidebarOpen)" class="option">
+        <i [class]="icon.class" [ngClass]="{'icon-big': sidebarOpen, 'icon-small': !sidebarOpen}"></i>
+        <div class="option-name" *ngIf="sidebarOpen">{{icon.name}}</div>
+    </div>
+    <div class="empty-space" *ngIf="i === 4"></div>
+    <div class="empty-space" *ngIf="i === 4"></div>
+    <div *ngIf="i === 4" style="width: auto; height: 8%"></div>
+
+</ng-container>
+<div class="two-last-options-container" *ngIf="sidebarOpen">
+  <div class="option">
+   <i [class]="icons[5].class" [ngClass]="{'icon-big': sidebarOpen}"></i>
+   <div class="option-name">{{icons[5].name}}</div>
+  </div>
+  <div class="option">
+    <i [class]="icons[6].class" [ngClass]="{'icon-big': sidebarOpen}"></i>
+    <div class="option-name">{{icons[6].name}}</div>
+   </div>
 </div>
 
-<div id="main" [ngStyle]="{'marginLeft': sidebarOpen ? '250px' : '0'}">
-  <button class="openbtn" (click)="openNav()">&#9776;</button>
+</div>
 
+<div id="main" [ngStyle]="{'marginLeft': sidebarOpen ? '15%' : '7%'}">
+  <button class="openbtn" (click)="openNav()">&#9776;</button>
+  <app-main-page></app-main-page>
 </div>

@@ -13,6 +13,15 @@ import { CommonModule } from '@angular/common';
 })
 export class SidebarComponent {
   sidebarOpen = false;
+  icons = [
+    { name: 'Twój dzień', class: 'fa-solid fa-calendar-days' },
+    { name: 'Znajomi', class: 'fa-solid fa-user-group' },
+    { name: 'Osiągnięcia', class: 'fa-solid fa-trophy' },
+    { name: 'Dziennik', class: 'fa-solid fa-book' },
+    { name: 'Monitor kalorii', class: 'fa-solid fa-utensils' },
+    { name: 'Profil', class: 'fa-solid fa-user' },
+    { name: 'Ustawienia', class: 'fa-solid fa-gear' }
+  ]
 
   openNav() {
     this.sidebarOpen = true;
