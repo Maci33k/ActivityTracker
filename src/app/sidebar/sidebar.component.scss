@@ -1,4 +1,15 @@
-/* The sidebar menu */
+.container {
+  display: flex; /* Stosuje flexbox do ustawienia sidebar i content obok siebie */
+  height: 100vh; /* Pełna wysokość widoku */
+}
+
+.content {
+  flex-grow: 1; /* Zajmuje dostępną przestrzeń obok sidebar */
+  display: flex; /* Stosuje flexbox do wyśrodkowania zawartości wewnątrz */
+  align-items: center; /* Wyśrodkowanie w pionie */
+  justify-content: center; /* Wyśrodkowanie w poziomie */
+}
+
 .sidebar {
   height: 100%; /* 100% Full-height */
   width: 0; /* 0 width - change this with JavaScript */
@@ -70,6 +81,7 @@
 
 .icon-small:hover {
   cursor: pointer;
+  transform: scale(1.5);
 }
 
 .icon-big {
@@ -80,6 +92,12 @@
 
 .icon-big:hover {
   cursor: pointer;
+  transform: scale(1.1);
+}
+
+.icon-big:hover + .option-name {
+  opacity: 0;
+  transition: opacity 0s;
 }
 
 .option {
@@ -114,3 +132,27 @@
   flex-direction: row;
   direction: rtl;
 }
+
+.side-bar-button {
+  align-items: center;
+  height: 100vh;
+  width: 5vw;
+  float:left;
+  display: flex;
+}
+
+#navbar-button {
+  text-align: center;
+  margin-top: -30%;
+  margin-bottom: 18%;
+}
+
+#open-button:hover {
+  cursor: pointer;
+}
+
+#close-button:hover {
+  cursor: pointer;
+}
+
+

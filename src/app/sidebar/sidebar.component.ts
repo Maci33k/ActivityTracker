@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
 })
 export class SidebarComponent {
   sidebarOpen = false;
+  divWidth = '80%';
   icons = [
     { name: 'Twój dzień', class: 'fa-solid fa-calendar-days' },
     { name: 'Znajomi', class: 'fa-solid fa-user-group' },
