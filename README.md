@@ -11,3 +11,12 @@ Web application for a thesis of an engineering degree about tracking physical ac
 # Wersja 0.2 03.05.2024
 # Frontend
 - Dopracowany wygląd side bara i działająca animacja. Ikonki zmieniają swoje rozmiary i położenie dynamicznie
+
+# Wersja 0.3 17.05.2024
+# Backend
+- Brak zmian
+# Frontend
+- Zrobiona strona logowania
+- Zrobiona strona rejestracji
+# Działanie aplikacji
+- Zrobiony routing między loginem, rejestracją i samą aplikacją
