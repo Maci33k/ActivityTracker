@@ -9,6 +9,8 @@ import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { CommonModule } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { HttpClientModule } from '@angular/common/http';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
     MainPageComponent,
     LoginComponent,
     CommonModule,
-    RegisterComponent
+    RegisterComponent,
+    HttpClientModule,
+    MatSnackBarModule
   ],
   providers: [
     provideAnimationsAsync()

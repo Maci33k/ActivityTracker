@@ -5,6 +5,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { UserServiceService } from '../services/user-service.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 @Component({
@@ -14,7 +17,8 @@ import { Subscription } from 'rxjs';
     MatCardModule,
     MatInputModule,
     MatButtonModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    FormsModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
@@ -23,8 +27,11 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('videoBackground') videoElement!: ElementRef<HTMLVideoElement>;
   private routerEventsSubscription!: Subscription;
+   email: string = '';
+   password: string = '';
+   response: any;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private userService: UserServiceService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.routerEventsSubscription = this.router.events.subscribe(event => {
@@ -47,10 +54,9 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   playVideo() {
     const video = this.videoElement.nativeElement;
     video.currentTime = 0;
-    video.muted = true; // Ensure the video is muted
+    video.muted = true;
     video.play().catch(error => {
       console.error('Failed to play the video:', error);
-      // Add event listener for user interaction
       const playOnInteraction = () => {
         video.play().catch(err => {
           console.error('Retry failed:', err);
@@ -62,7 +68,25 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   LogIn() {
-    this.router.navigate(['/app']);
+    this.verifyUser();
+  }
+
+  verifyUser() {
+    this.userService.checkUser(this.email, this.password).subscribe({
+      next: (data) => {
+        this.response = data;
+        if(this.response == true) {
+          this.router.navigate(['/app']);
+        }
+      },
+      error: (err) => {
+        this.response = err.error;
+        this.snackBar.open('Niepoprawne dane logowania', 'Zamknij', {
+          duration: 3000,
+          verticalPosition: 'top'
+        });
+      }
+    });
   }
 
 }
