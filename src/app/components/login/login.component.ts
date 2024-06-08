@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { UserServiceService } from '../services/user-service.service';
+import { UserServiceService } from 'src/app/services/user-service.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 
@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       next: (data) => {
         this.response = data;
         if(this.response == true) {
-          this.router.navigate(['/app']);
+          this.router.navigate(['/app/your-day']);
         }
       },
       error: (err) => {

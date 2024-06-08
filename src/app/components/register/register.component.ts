@@ -3,9 +3,9 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { passwordMatchValidator } from '../validators/match-password';
-import { UserModel } from '../models/user.model';
-import { UserServiceService } from '../services/user-service.service';
+import { passwordMatchValidator } from 'src/app/validators/match-password';
+import { UserModel } from 'src/app/models/user.model';
+import { UserServiceService } from 'src/app/services/user-service.service';
 
 @Component({
   selector: 'app-register',
