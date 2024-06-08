@@ -31,3 +31,9 @@ Web application for a thesis of an engineering degree about tracking physical ac
   - Działa rejestracja i logowanie (Obsłużenie przesłania danych do API)
   - Nowe walidacje (hasła muszą być takie same)
   - Nowe komunikaty błędów
+
+   # Wersja 0.5 08.06.2024
+  # Backend
+  - Brak zmian
+  # Frontend
+  - Obsługa routingu między podstronami, działająca nawigacja przycisków w side bar 
