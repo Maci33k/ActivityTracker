@@ -36,4 +36,11 @@ Web application for a thesis of an engineering degree about tracking physical ac
   # Backend
   - Brak zmian
   # Frontend
-  - Obsługa routingu między podstronami, działająca nawigacja przycisków w side bar 
+  - Obsługa routingu między podstronami, działająca nawigacja przycisków w side bar
+ 
+    # Wersja 0.6 24.06.2024
+    # Backend
+    - Obsługa zapisywania danych w bazie
+    # Frontend
+    - Interfejs do wysyłania danych
+    - Zakładka profil
