@@ -5,8 +5,8 @@
 
 
 <div class="container">
-  <div id="app-name">Activity Tracker</div>
-  <div class="login-container">
+  <div id="app-name" *ngIf="!firstPartDone">Activity Tracker</div>
+  <div class="login-container" *ngIf="!firstPartDone">
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <div id="login-text">Zarejestruj się</div>
@@ -65,4 +65,40 @@
       </div>
     </form>
   </div>
+
+  <div id="app-name"*ngIf="firstPartDone">Activity Tracker</div>
+  <div class="login-container" *ngIf="firstPartDone">
+      <div id="login-text">Powiedz coś więcej o sobie</div>
+      <form [formGroup]="personalDataForm" (ngSubmit)="onSubmit2()">
+        <div class="form-group">
+          <div class="login-form">
+          <input type="text" class="form-control" placeholder="Imię" formControlName="name">
+        </div>
+        <div class="login-form">
+          <input type="text" class="form-control" placeholder="Nazwisko" formControlName="surname">
+        </div>
+        <div class="login-form">
+          <label>
+            <input type="radio" name="gender" value="men" formControlName="gender">
+            Mężczyzna &nbsp;&nbsp;&nbsp;
+          </label>
+          <label>
+            <input type="radio" name="gender" value="woman" formControlName="gender">
+            Kobieta
+          </label>
+        </div>
+        <div class="login-form">
+          <input type="number" id="numberInput" name="numberInput" class="form-control" placeholder="Wiek" formControlName="age">
+        </div>
+        <div class="login-form">
+          <input type="text" class="form-control" placeholder="Miasto" formControlName="city">
+        </div>
+        </div>
+        <div id="login-button">
+          <button type="submit" class="btn btn-primary">Zatwierdź</button>
+        </div>
+      </form>
+  </div>
+
 </div>
+

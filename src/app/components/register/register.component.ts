@@ -23,11 +23,17 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit {
   private routerEventsSubscription!: Subscription;
   isSubmitted = false;
   registeredUserId = 0;
+  firstPartDone = false;
 
   user: UserModel =
   {
    userID: 0,
    username: '',
+   name: '',
+   surname: '',
+   age: 0,
+   gender: '',
+   city: '',
    email: '',
    password: '',
    isVerified:  false,
@@ -42,6 +48,14 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit {
     repeatPassword: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]]
   }, { validators: passwordMatchValidator });
+
+  personalDataForm = this.fb.group({
+    name: ['', Validators.required],
+    surname: ['', Validators.required],
+    gender: ['', Validators.required],
+    age: [0, Validators.required],
+    city: ['', Validators.required]
+  })
 
 
   constructor(private router: Router,
@@ -86,6 +100,19 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit {
   onSubmit() {
     //console.log('submitted form', this.registerForm.value, this.registerForm.invalid);
     console.log(this.user.email);
+    //this.registerUser();
+    this.firstPartDone = true;
+  }
+
+  onSubmit2() {
+    console.log(this.personalDataForm.value.city);
+    this.user.name = this.personalDataForm.value.name!;
+    this.user.surname = this.personalDataForm.value.surname!;
+    this.user.age = this.personalDataForm.value.age!;
+    this.user.city = this.personalDataForm.value.city!;
+    this.user.gender = this.personalDataForm.value.gender!;
+    console.log(this.user.city);
+    console.log(this.user.username);
     this.registerUser();
   }
 
@@ -113,7 +140,5 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
   }
-
-
 }
 

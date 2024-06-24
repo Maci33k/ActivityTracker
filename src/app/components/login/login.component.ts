@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { UserServiceService } from 'src/app/services/user-service.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserSharedService } from 'src/app/shared/user-shared.service';
 
 
 @Component({
@@ -31,7 +32,11 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
    password: string = '';
    response: any;
 
-  constructor(private router: Router, private userService: UserServiceService, private snackBar: MatSnackBar) {}
+  constructor(private router: Router,
+     private userService: UserServiceService,
+     private snackBar: MatSnackBar,
+     private userData: UserSharedService
+    ) {}
 
   ngOnInit() {
     this.routerEventsSubscription = this.router.events.subscribe(event => {
@@ -76,6 +81,9 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
       next: (data) => {
         this.response = data;
         if(this.response == true) {
+          console.log(this.email);
+          this.setUserId();
+          this.setEmail();
           this.router.navigate(['/app/your-day']);
         }
       },
@@ -87,6 +95,50 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
         });
       }
     });
+  }
+
+  setUserId(): void {
+    this.userService.getUserId(this.email).subscribe({
+      next: (data: any) => {
+        this.userData.userID = data;
+        this.setUsername();
+        this.getFullUser();
+      },
+      error: (err: any) => {
+        console.log(err);
+      }
+    })
+  }
+
+  setEmail(): void {
+    this.userData.email = this.email;
+  }
+
+  setUsername(): void {
+    this.userService.gerUsername(this.userData.userID!).subscribe({
+      next: (res) => {
+        this.userData.username = res;
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    })
+  }
+
+  getFullUser(): void {
+    this.userService.getFullUserData(this.userData.userID!).subscribe({
+      next: (user) => {
+        this.userData.name = user.name;
+        this.userData.surname = user.surname;
+        this.userData.age = user.age;
+        this.userData.gender = user.gender;
+        this.userData.city = user.city;
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    })
   }
 
 }

@@ -1,1 +1,28 @@
-<p>profile works!</p>
+<br>
+<div class="top-container" [@slideIn]>
+  <div class="image" (click)="fileInput.click()">
+    <img *ngIf="userPhoto" [src]="userPhoto" alt="User Photo" style="width: 25vw; height: 45vh; border-radius: 50%;">
+    <i class="fa-solid fa-user" *ngIf="!userPhoto"></i>
+    <input type="file" #fileInput (change)="onFileSelected($event)" style="display: none;" accept="image/*">
+  </div>
+  <div class="info">
+    <div class="name">
+      {{name}} &nbsp; {{surname}}
+    </div>
+    <div class="location">
+      {{city}}
+    </div>
+  </div>
+</div>
+
+<br>
+
+<div class="email" [@slideIn]>
+  <i class="fa-regular fa-envelope"></i>
+  &nbsp;&nbsp;&nbsp;{{email}}
+</div>
+<br>
+<div class="email" [@slideIn]>
+  <i class="fa-solid fa-user-secret"></i>
+  &nbsp;&nbsp;&nbsp;{{username}}
+</div>

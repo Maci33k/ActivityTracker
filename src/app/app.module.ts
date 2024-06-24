@@ -11,6 +11,7 @@ import { CommonModule } from '@angular/common';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     CommonModule,
     RegisterComponent,
     HttpClientModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    DragDropModule
   ],
   providers: [
     provideAnimationsAsync()
