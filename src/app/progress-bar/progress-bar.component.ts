@@ -8,16 +8,11 @@ import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/cor
   templateUrl: './progress-bar.component.html',
   styleUrl: './progress-bar.component.scss'
 })
-export class ProgressBarComponent implements OnInit {
+export class ProgressBarComponent {
 
   @Input() experience: number = 0;
   @Input() maxExperience: number = 350;
 
-  ngOnInit(): void {
-    setTimeout(() => {
-      this.experience = 220;
-    }, 100);
-  }
 
   increaseExperience() {
     if (this.experience < this.maxExperience) {
