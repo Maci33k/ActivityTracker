@@ -44,3 +44,10 @@ Web application for a thesis of an engineering degree about tracking physical ac
     # Frontend
     - Interfejs do wysyłania danych
     - Zakładka profil
+
+    # Wersja 0.7 02.08.2024
+    # Backend
+    - Nowe modele i kontrolery do obsługi systemy progresji, analizy danych i konfiguracji aplikacji
+    # Frontend
+    - Dodanie dziennika do prezentacji danych i uzyskanych wyników
+    - System progresji i zdobywania punktów
