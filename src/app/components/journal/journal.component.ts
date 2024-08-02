@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { slideInAnimation } from 'src/app/animations';
@@ -8,8 +8,17 @@ import { fadeSlideAnimation } from 'src/app/animations';
 import { UserSharedService } from 'src/app/shared/user-shared.service';
 import { ActivityService } from 'src/app/services/activity.service';
 import { ActivityModel } from 'src/app/models/activity.model';
-import { Observable } from 'rxjs';
-
+import { Observable, timeout } from 'rxjs';
+import { AppSharedService } from 'src/app/shared/app-shared.service';
+import { IconsService } from 'src/app/services/icons.service';
+import { ConfigSharedService } from 'src/app/shared/config-shared.service';
+import { ActivitySharedService } from 'src/app/shared/activity-shared.service';
+import { AnalysisAlgorithmService } from 'src/app/services/analysis-algorithm.service';
+import { ScoreService } from 'src/app/services/score.service';
+import { ScoresModel } from 'src/app/models/scores.model';
+import { ScoresSharedService } from 'src/app/shared/scores-shared.service';
+import { LevelInfoService } from 'src/app/shared/level-info.service';
+import { LevelService } from 'src/app/services/level.service';
 
 @Component({
   selector: 'app-journal',
@@ -23,16 +32,42 @@ import { Observable } from 'rxjs';
   templateUrl: './journal.component.html',
   styleUrl: './journal.component.scss'
 })
-export class JournalComponent {
+export class JournalComponent implements OnInit {
+
+  todaysRecord: any;
+  todayRecordID: number = 0;
+  stepsCompleted: boolean = false;
+  caloriesCompleted: boolean = false;
+  waterCompleted: boolean = false;
+  sleepCompleted: boolean = false;
+  trainingCompleted: boolean = false;
+
 
   constructor(private userData: UserSharedService,
-              private activityService: ActivityService
+              private activityService: ActivityService,
+              private appData: AppSharedService,
+              private iconsService: IconsService,
+              private configData: ConfigSharedService,
+              private activityData: ActivitySharedService,
+              private analyze: AnalysisAlgorithmService,
+              private scoreService: ScoreService,
+              private scoresData: ScoresSharedService,
+              private lvlData: LevelInfoService,
+              private lvlService: LevelService
   ) {}
+
+  ngOnInit(): void {
+    this.appData.navBarLocation = 1;
+    console.log(this.appData.navBarLocation);
+    this.displayNotCompletedFields();
+  }
 
   draggedIcon: any;
   draggedIndex: number | null = null;
   numberOfCustomFields = 0;
   expanded = false;
+  numberOfTiles: number = 5;
+  numberOfTrackedActivities: number = 5;
 
   // Variables of activity data prepared to send to the database
   steps: number | null = null;
@@ -44,13 +79,17 @@ export class JournalComponent {
     endTime: null as string | null
   }
 
-  icons = [
-    { name: 'Kroki', class: 'fa-solid fa-shoe-prints', state: 'active' },
-    { name: 'Kalorie', class: 'fa-solid fa-fire', state: 'active' },
-    { name: 'Woda', class: 'fa-solid fa-droplet', state: 'active' },
-    { name: 'Trening', class: 'fa-solid fa-person-running', state: 'active' },
-    { name: 'Sen', class: 'fa-solid fa-moon', state: 'active' }
-  ]
+    // icons = [
+   // { name: 'Kroki', class: 'fa-solid fa-shoe-prints', state: 'active' },
+   // { name: 'Kalorie', class: 'fa-solid fa-fire', state: 'active' },
+   // { name: 'Woda', class: 'fa-solid fa-droplet', state: 'active' },
+   // { name: 'Trening', class: 'fa-solid fa-person-running', state: 'active' },
+   // { name: 'Sen', class: 'fa-solid fa-moon', state: 'active' }
+ // ]
+
+    icons = this.iconsService.icons.slice();
+    iconsToRender: any;
+
 
   onDragStart(event: DragEvent, icon: any, index: number) {
     this.draggedIcon = icon;
@@ -59,17 +98,17 @@ export class JournalComponent {
   }
 
   onDragOver(event: DragEvent) {
-    event.preventDefault(); // Zapobiega domyślnemu zachowaniu przeglądarki, umożliwiając operację drop
-    const element = event.target as HTMLElement; // Konwertuje cel zdarzenia na element HTML
-    element.classList.add('drag-over'); // Dodaje klasę CSS 'drag-over' do elementu
+    event.preventDefault();
+    const element = event.target as HTMLElement;
+    element.classList.add('drag-over');
   }
 
   onDrop(event: DragEvent) {
-    event.preventDefault(); // Zapobiega domyślnemu zachowaniu przeglądarki
+    event.preventDefault();
     const data = event.dataTransfer?.getData('application/json');
-    const icon = data ? JSON.parse(data) : null; // Parsuje dane JSON
-    const element = event.target as HTMLElement; // Konwertuje cel zdarzenia na element HTML
-    element.classList.remove('drag-over'); // Usuwa klasę CSS 'drag-over' z elementu
+    const icon = data ? JSON.parse(data) : null;
+    const element = event.target as HTMLElement;
+    element.classList.remove('drag-over');
 
     if (element !== event.currentTarget) {
 
@@ -93,7 +132,7 @@ export class JournalComponent {
     }
     if (this.draggedIndex !== null) {
       this.icons.splice(this.draggedIndex, 1);
-      this.draggedIndex = null; // Resetuje indeks przeciąganej ikony
+      this.draggedIndex = null;
       this.numberOfCustomFields++;
       console.log(this.numberOfCustomFields);
     }
@@ -105,7 +144,7 @@ export class JournalComponent {
   }
 
   toggleState() {
-    this.expanded = !this.expanded; // zmiana stanu po kliknięciu
+    this.expanded = !this.expanded;
   }
 
   // logic for data traffic between html and typescript variables
@@ -145,22 +184,79 @@ export class JournalComponent {
     console.log(this.steps);
     console.log(this.userData.userID);
     this.removeItem(item);
+    this.removeIconByName(item.name);
+    this.displayNotCompletedFields();
     this.createActivity();
+
+    setTimeout(() => {
+      if(item.name == 'Kroki') {
+        this.analyze.analyzeSteps(this.steps!);
+        console.log(this.analyze.stepsScore);
+        this.updateTotalScore(this.analyze.stepsScore);
+        this.scoreService.putStepsScore(this.analyze.stepsScore, this.activityData.activityDataID!).subscribe({
+          next: (res) => {
+            console.log(res);
+          },
+          error: (err) => {
+            console.log(err);
+          }
+        });
+      }
+      if(item.name == 'Woda') {
+        this.analyze.analyzeWater(this.water!);
+        console.log(this.analyze.waterScore);
+        this.updateTotalScore(this.analyze.waterScore);
+        this.scoreService.putWaterScore(this.analyze.waterScore, this.activityData.activityDataID!).subscribe({
+          next: (res) => {
+            console.log(res);
+          },
+          error: (err) => {
+            console.log(err);
+          }
+        });
+      }
+      if(item.name == 'Kalorie') {
+        this.analyze.analyzeCalories(this.callories!);
+        console.log(this.analyze.caloriesScore);
+        this.updateTotalScore(this.analyze.caloriesScore);
+        this.scoreService.putCaloriesScore(this.analyze.caloriesScore, this.activityData.activityDataID!).subscribe({
+          next: (res) => {
+            console.log(res);
+          },
+          error: (err) => {
+            console.log(err);
+          }
+        });
+      }
+      console.log(item.name);
+    }, 1000);
   }
 
   removeItem(item: any) {
     item.state = 'inactive';
     setTimeout(() => {
       this.icons = this.icons.filter(i => i !== item);
-    }, 500); // Czas animacji w milisekundach
+    }, 500);
   }
 
   submitTime(item: any) {
     if(this.sleepTimeRange.startTime && this.sleepTimeRange.endTime) {
     console.log(this.sleepTimeRange.startTime);
-    console.log(this.sleepTimeRange.endTime);
+    console.log('end time: ',this.sleepTimeRange.endTime);
     this.calculateSleepTime();
     this.createActivity();
+    setTimeout(() => {
+      this.analyze.analyzeSleep(this.sleepTime!);
+      this.updateTotalScore(this.analyze.sleepScore);
+      this.scoreService.putSleepScore(this.analyze.sleepScore, this.activityData.activityDataID!).subscribe({
+        next: (res) => {
+          console.log(res);
+        },
+        error: (err) => {
+          console.log(err);
+        }
+      });
+    }, 1000);
     this.removeItem(item);
     }
   }
@@ -169,7 +265,7 @@ export class JournalComponent {
     this.activityService.checkIfRecordExists().subscribe({
       next: (success) => {
         console.log(success);
-        if(success == false) {
+        if(success == false && this.todayRecordID == 0) {
         const activityData: ActivityModel =
     {
       id: 0,
@@ -182,7 +278,7 @@ export class JournalComponent {
     }
     this.activityService.createRecord(activityData).subscribe({
       next: (data) => {
-        console.log(data);
+        console.log('Rekord został stworzony',data);
       },
       error: (err) => {
         console.log(err);
@@ -212,6 +308,7 @@ export class JournalComponent {
       water: this.water,
       sleepTime: this.sleepTime
     }
+
     console.log(activityData);
     this.activityService.updateRecord(activityData.id, activityData).subscribe({
       next: (res) => {
@@ -231,32 +328,222 @@ export class JournalComponent {
 
   calculateSleepTime() {
     if (this.sleepTimeRange.startTime && this.sleepTimeRange.endTime) {
-      // Pobierz datę dzisiejszą jako punkt odniesienia dla obu godzin
       const today = new Date();
 
-      // Pobierz godziny i minuty z inputów
       const startTimeParts = this.sleepTimeRange.startTime.split(':').map(part => parseInt(part, 10));
       const endTimeParts = this.sleepTimeRange.endTime.split(':').map(part => parseInt(part, 10));
+      console.log(startTimeParts);
+      console.log(endTimeParts);
+      this.activityData.sleepStart = startTimeParts;
+      this.activityData.sleepEnd = endTimeParts;
 
-      // Ustaw daty dla obu godzin na dzisiejszy dzień
       const startDateTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), startTimeParts[0], startTimeParts[1]);
       const endDateTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), endTimeParts[0], endTimeParts[1]);
 
-      // Jeżeli koniec jest wcześniejszy niż początek, dodaj jeden dzień do daty końcowej
       if (endDateTime < startDateTime) {
         endDateTime.setDate(endDateTime.getDate() + 1);
       }
 
-      // Obliczenie różnicy czasu w minutach
       const diff = (endDateTime.getTime() - startDateTime.getTime()) / (1000 * 60);
 
-      // Przypisanie obliczonej różnicy do zmiennej sleepTime
       this.sleepTime = diff;
       console.log('Calculated sleep time:', this.sleepTime);
     } else {
-      this.sleepTime = null; // Jeżeli którakolwiek z wartości czasu jest pusta, ustaw czas snu na null
+      this.sleepTime = null;
     }
   }
 
+  removeIconByName(name: string): void {
+    const index = this.icons.findIndex(icon => icon.name === name);
+    if (index !== -1) {
+      this.icons.splice(index, 1);
+    } else {
+      console.log(`Nie znaleziono ikony o nazwie ${name}`);
+    }
+  }
+
+  getTrackedActivities() {
+    if(this.configData.calories == false || this.caloriesCompleted == true) {
+      this.removeIconByName('Kalorie');
+      this.numberOfTiles--;
+    }
+    if(this.configData.steps == false || this.stepsCompleted == true) {
+      this.removeIconByName('Kroki');
+      this.numberOfTiles--;
+    }
+    if(this.configData.training == false || this.trainingCompleted == true) {
+      this.removeIconByName('Trening');
+      this.numberOfTiles--;
+    }
+    if(this.configData.water == false || this.waterCompleted == true) {
+      this.removeIconByName('Woda');
+      this.numberOfTiles--;
+    }
+    if(this.configData.sleepTime == false || this.sleepCompleted == true) {
+      this.removeIconByName('Sen');
+      this.numberOfTiles--;
+    }
+    this.iconsToRender = this.icons;
+  }
+
+  displayNotCompletedFields() {
+    this.activityService.getTodaysRecordID().subscribe({
+      next: (id) => {
+        this.todayRecordID = id;
+        this.activityData.activityDataID = this.todayRecordID;
+        console.log('Today record ID', id);
+        this.addScoresRecord();
+        this.selectNotCompletedFields();
+      },
+      error: (err) => {
+        console.log(err);
+        setTimeout(() => {
+          if(this.userData.userID != null && this.userData.userID != 0 && this.todayRecordID == 0) {
+            this.createActivity();
+            this.displayNotCompletedFields();
+          }
+      }, 3000);
+       // if(this.userData.userID != null && this.userData.userID != 0 && this.todayRecordID == 0) {
+         // this.createActivity();
+         // this.displayNotCompletedFields();
+       // }
+      }
+    });
+  }
+
+  selectNotCompletedFields() {
+    this.activityService.getSingleRecord(this.todayRecordID).subscribe({
+      next: (record: any) => {
+        console.log(record);
+        if(record.steps != null) {
+          this.steps = record.steps;
+          this.stepsCompleted = true;
+        }
+        if(record.calories != null) {
+          this.callories = record.calories;
+          this.caloriesCompleted = true;
+        }
+        if(record.water != null) {
+          this.water = record.water;
+          this.waterCompleted = true;
+        }
+        if(record.sleepTime != null) {
+          this.sleepTime = record.sleepTime;
+          this.sleepCompleted = true;
+        }
+
+        this.getTrackedActivities();
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
+  addScoresRecord() {
+   const scores: ScoresModel =
+   {
+    Id: 0,
+    ActivityDataID: this.todayRecordID,
+    StepsScore: null,
+    CaloriesScore: null,
+    WaterScore: null,
+    SleepScore: null,
+    TotalScore: null,
+    UserID: this.userData.userID!
+   }
+
+   this.scoreService.postScoresRecord(scores, this.todayRecordID).subscribe({
+    next: (res: any) => {
+      console.log(res);
+    },
+    error: (err) => {
+      console.log(err);
+    }
+   });
+  }
+
+  updateTotalScore(score: number) {
+    this.scoreService.putTotalScore(score, this.activityData.activityDataID!).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
+  getOverall() {
+    this.scoreService.getTodayScoreRecord(this.activityData.activityDataID!).subscribe({
+      next: (scores) => {
+        console.log(scores.totalScore);
+        console.log(scores);
+        this.scoresData.totalScore = scores.totalScore;
+        this.analyze.analyzeOverallScore();
+        console.log('Overall:', this.scoresData.overallScore);
+        this.addExperience();
+        this.scoreService.putOverallScore(this.scoresData.overallScore!, this.activityData.activityDataID!).subscribe({
+          next: (res) => {
+            console.log(res);
+          },
+          error: (err) => {
+            console.log(err);
+          }
+        });
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
+  addExperience() {
+    this.lvlData.experience += this.scoresData.overallScore!;
+    if(this.lvlData.experience >= this.lvlData.nextLevelExperience) {
+      this.lvlData.experience = this.lvlData.experience - this.lvlData.nextLevelExperience;
+      this.lvlData.currentLevel++;
+      this.lvlData.totalExperience += this.scoresData.overallScore!;
+      this.lvlData.nextLevel = this.lvlData.currentLevel + 1;
+      this.lvlData.nextLevelExperience = this.lvlData.getExpForLevel(this.lvlData.nextLevel);
+    }
+
+    this.lvlService.putExperience(this.userData.userID!, this.lvlData.experience).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+
+    this.lvlService.putLevel(this.userData.userID!, this.lvlData.currentLevel).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+
+    this.lvlService.putNextLevelExperience(this.userData.userID!, this.lvlData.nextLevelExperience).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+
+    this.lvlService.putTotalExperience(this.userData.userID!, this.lvlData.totalExperience).subscribe({
+      next: (res) => {
+        console.log(res);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+
+  }
 
 }

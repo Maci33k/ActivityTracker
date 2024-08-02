@@ -10,6 +10,10 @@ import { JournalComponent } from './components/journal/journal.component';
 import { CalloriesMonitorComponent } from './components/callories-monitor/callories-monitor.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { JournalDataComponent } from './journal-data/journal-data.component';
+import { SettingsUserComponent } from './settings-user/settings-user.component';
+import { SettingsActivitiesComponent } from './settings-activities/settings-activities.component';
+import { GoalsComponent } from './components/goals/goals.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -19,10 +23,16 @@ const routes: Routes = [
      [{ path: 'friends', component: FriendsComponent  },
     { path: 'your-day', component: YourDayComponent  },
     { path: 'achievements', component: AchievementsComponent  },
-    { path: 'journal', component: JournalComponent  },
+    { path: 'journal', component: JournalComponent },
     { path: 'callories-monitor', component: CalloriesMonitorComponent },
-    { path: 'settings', component: SettingsComponent },
-    { path: 'profile', component: ProfileComponent }
+    { path: 'settings', component: SettingsComponent, children:
+      [{ path: 'user', component: SettingsUserComponent },
+       { path: 'activities', component: SettingsActivitiesComponent },
+       { path: 'goals', component: GoalsComponent }
+      ],
+     },
+    { path: 'profile', component: ProfileComponent },
+    { path: 'data', component: JournalDataComponent }
   ] }
 ];
 

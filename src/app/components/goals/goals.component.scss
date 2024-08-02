@@ -1,0 +1,65 @@
+.title
+{
+  color: white;
+  font-size: 3vw;
+}
+
+.add-button
+{
+  margin-top: 3vh;
+  margin-bottom: 2vh;
+}
+
+.goal
+{
+  display: flex;
+  width: 50vw;
+  height: 5%;
+  color: white;
+  border-bottom: 2px solid white;
+  text-align: center;
+  justify-content: center;
+  justify-items: center;
+}
+
+.activity-name
+{
+  font-size: 1.5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.amount
+{
+  font-size: 1.5vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-left: 10%;
+}
+
+.edit
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-left: 10%;
+}
+
+.delete
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-left: 10%;
+}
+
+.dropdown-item
+{
+  cursor: pointer;
+}

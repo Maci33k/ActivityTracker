@@ -12,6 +12,10 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DatePipe } from '@angular/common';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { ProgressBarComponent } from './progress-bar/progress-bar.component';
+
 
 @NgModule({
   declarations: [
@@ -28,10 +32,14 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     RegisterComponent,
     HttpClientModule,
     MatSnackBarModule,
-    DragDropModule
+    DragDropModule,
+    DatePipe,
+    BsDropdownModule.forRoot(),
+    ProgressBarComponent
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    DatePipe
   ],
   bootstrap: [AppComponent]
 })

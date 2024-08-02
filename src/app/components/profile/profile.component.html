@@ -26,3 +26,24 @@
   <i class="fa-solid fa-user-secret"></i>
   &nbsp;&nbsp;&nbsp;{{username}}
 </div>
+
+<br>
+
+<div class="lvl-container">
+  <div class="current-lvl">
+    {{lvlData.currentLevel}}
+  </div>
+  <div class="progress-bar">
+    <app-progress-bar [experience]="this.experience" [maxExperience]="lvlData.nextLevelExperience"></app-progress-bar>
+  </div>
+  <div class="next-lvl">
+    {{lvlData.nextLevel}}
+  </div>
+</div>
+
+<br>
+
+<div class="current-lvl-info">
+  POZIOM {{lvlData.currentLevel}}
+</div>
+

@@ -3,18 +3,22 @@ import { slideInAnimation } from 'src/app/animations';
 import { UserSharedService } from 'src/app/shared/user-shared.service';
 import { UserServiceService } from 'src/app/services/user-service.service';
 import { CommonModule } from '@angular/common';
+import { ProgressBarComponent } from "../../progress-bar/progress-bar.component";
+import { LevelInfoService } from 'src/app/shared/level-info.service';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ProgressBarComponent],
   animations: [slideInAnimation],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss',
 })
 export class ProfileComponent implements OnInit {
 
-  constructor(private userData: UserSharedService, private userService: UserServiceService){}
+  constructor(private userData: UserSharedService, private userService: UserServiceService,
+              public lvlData: LevelInfoService
+  ){}
 
 
 
@@ -26,9 +30,15 @@ export class ProfileComponent implements OnInit {
   gender: string = this.userData.gender!;
   city: string = this.userData.city!;
   userPhoto: any;
+  experience: number = 0;
 
   ngOnInit(): void {
       this.getUserPhoto();
+      console.log('LVL: ', this.lvlData.currentLevel);
+
+        setTimeout(() => {
+          this.experience = this.lvlData.experience;
+        }, 100);
   }
 
   onFileSelected(event: any): void {

@@ -80,3 +80,25 @@
   font-size: 3vw;
 }
 
+.lvl-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.progress-bar
+{
+  width: 80%;
+}
+
+.current-lvl, .next-lvl
+{
+  font-size: 5vw;
+  font-weight: 900;
+}
+
+.current-lvl-info
+{
+  font-size: 3vw;
+  font-weight: 900;
+}

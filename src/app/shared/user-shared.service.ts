@@ -12,6 +12,7 @@ export class UserSharedService {
   gender: string | null = null;
   age: number | null = null;
   city: string | null = null;
+  userConfigID: number | null = null;
 
   constructor() { }
 }

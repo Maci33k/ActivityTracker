@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MainPageComponent } from '../main-page/main-page.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
+import { AppSharedService } from 'src/app/shared/app-shared.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -15,7 +16,7 @@ import { RouterModule, Router } from '@angular/router';
 })
 export class SidebarComponent {
 
-  constructor(private router: Router){}
+  constructor(private router: Router, private appData: AppSharedService){}
   sidebarOpen = false;
   divWidth = '80%';
   icons = [
@@ -27,6 +28,21 @@ export class SidebarComponent {
     { name: 'Profil', class: 'fa-solid fa-user' },
     { name: 'Ustawienia', class: 'fa-solid fa-gear' }
   ]
+
+  iconsJournal = [
+    { name: 'Wpisz do dziennika', class: 'fa-regular fa-square-plus' },
+    { name: 'Przejrzyj', class: 'fa-solid fa-eye' },
+    { name: 'Powrót', class: 'fa-solid fa-rotate-left' }
+  ]
+
+  iconsSettings = [
+    { name: 'Użytkownik', class: 'fa-solid fa-person' },
+    { name: 'Aktywności', class: 'fa-solid fa-person-running' },
+    { name: 'Cele', class: 'fa-solid fa-bullseye' }
+  ]
+  navBarLocation = this.appData.navBarLocation;
+
+
 
   openNav() {
     this.sidebarOpen = true;
@@ -45,6 +61,7 @@ export class SidebarComponent {
     }
     if(buttonName == 'Dziennik') {
       this.router.navigate(['app/journal']);
+      this.changeNavBarLocation(buttonName);
     }
     if(buttonName == 'Monitor kalorii') {
       this.router.navigate(['app/callories-monitor']);
@@ -53,10 +70,44 @@ export class SidebarComponent {
       this.router.navigate(['app/achievements']);
     }
     if(buttonName == 'Ustawienia') {
+      this.changeNavBarLocation(buttonName);
       this.router.navigate(['app/settings']);
     }
     if(buttonName == 'Profil') {
       this.router.navigate(['app/profile']);
+    }
+    if(buttonName == 'Powrót') {
+      this.router.navigate(['app/your-day']);
+    }
+    if(buttonName == 'Przejrzyj') {
+      this.router.navigate(['app/data']);
+    }
+    if(buttonName == 'Wpisz do dziennika') {
+      this.router.navigate(['app/journal']);
+    }
+    if(buttonName == 'Użytkownik') {
+      this.router.navigate(['app/settings/user']);
+    }
+    if(buttonName == 'Aktywności') {
+      this.router.navigate(['app/settings/activities']);
+    }
+    if(buttonName == 'Cele') {
+      this.router.navigate(['app/settings/goals']);
+    }
+  }
+  changeNavBarLocation(buttonName: string) {
+    if(buttonName == 'Dziennik') {
+      this.navBarLocation = 1;
+      this.appData.navBarLocation = this.navBarLocation;
+    }
+    if(buttonName == 'Powrót') {
+      this.navBarLocation = 0;
+      this.appData.navBarLocation = this.navBarLocation;
+      this.navigate('Powrót')
+    }
+    if(buttonName == 'Ustawienia') {
+      this.navBarLocation = 2;
+      this.appData.navBarLocation = this.navBarLocation;
     }
   }
 }

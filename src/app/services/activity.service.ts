@@ -14,6 +14,7 @@ export class ActivityService {
   urlToCheckIfRecordExists: string = 'https://localhost:7217/api/ActivityData/check-if-exists';
   urlToUpdateRecord: string = 'https://localhost:7217/api/ActivityData';
   urlToGetTodaysRecordID: string = 'https://localhost:7217/api/ActivityData/GetID';
+  urlToGetAllData: string = 'https://localhost:7217/api/ActivityData/user';
 
   createRecord(activityModel: ActivityModel): Observable<any> {
     return this.http.post(this.urlToPost, activityModel);
@@ -29,5 +30,13 @@ export class ActivityService {
 
   getTodaysRecordID(): Observable<number> {
     return this.http.get<number>(this.urlToGetTodaysRecordID);
+  }
+
+  getAllData(userId: number): Observable<any> {
+    return this.http.get(`${this.urlToGetAllData}/${userId}`);
+  }
+
+  getSingleRecord(id: number): Observable<any> {
+    return this.http.get(`${this.urlToPost}/${id}`);
   }
 }

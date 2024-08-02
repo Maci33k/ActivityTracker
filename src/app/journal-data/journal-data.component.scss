@@ -1,0 +1,40 @@
+.month
+{
+  font-size: 5vw;
+}
+
+.row
+{
+  border-bottom: 2px solid black;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5vw;
+  height: 8vh;
+}
+
+.field
+{
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50px;
+  background-color: black;
+  color: white;
+  height: 10vh;
+  width: 10vw;
+  margin-left: 9vw;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+
+.date {
+  font-size: 2vw;
+}
+
+.total-score
+{
+  width: 50%;
+}

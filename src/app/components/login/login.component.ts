@@ -9,6 +9,11 @@ import { FormsModule } from '@angular/forms';
 import { UserServiceService } from 'src/app/services/user-service.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserSharedService } from 'src/app/shared/user-shared.service';
+import { ConfigService } from 'src/app/services/config.service';
+import { ConfigSharedService } from 'src/app/shared/config-shared.service';
+import { TrackedActivitiesModel } from 'src/app/models/tracked-activities.model';
+import { LevelService } from 'src/app/services/level.service';
+import { LevelInfoService } from 'src/app/shared/level-info.service';
 
 
 @Component({
@@ -35,7 +40,11 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(private router: Router,
      private userService: UserServiceService,
      private snackBar: MatSnackBar,
-     private userData: UserSharedService
+     private userData: UserSharedService,
+     private configService: ConfigService,
+     private configData: ConfigSharedService,
+     private lvlService: LevelService,
+     private lvlData: LevelInfoService
     ) {}
 
   ngOnInit() {
@@ -103,6 +112,7 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
         this.userData.userID = data;
         this.setUsername();
         this.getFullUser();
+        this.getLevelData(data);
       },
       error: (err: any) => {
         console.log(err);
@@ -134,11 +144,71 @@ export class LoginComponent implements OnInit, OnDestroy, AfterViewInit {
         this.userData.age = user.age;
         this.userData.gender = user.gender;
         this.userData.city = user.city;
+        this.userData.userConfigID = user.userConfigID;
+        console.log('config ID', user.userConfigID);
+        this.getTrackedActivities();
       },
       error: (err) => {
         console.log(err);
       }
-    })
+    });
+  }
+
+  getTrackedActivities() {
+    this.configService.getTrackedActivities(this.userData.userConfigID!).subscribe({
+      next: (data) => {
+        console.log("Tracked Activities: ", data);
+        this.configData.steps = data.steps;
+        this.configData.calories = data.calories;
+        this.configData.water = data.water;
+        this.configData.sleepTime = data.sleepTime;
+        this.configData.training = data.training;
+      },
+      error: (err) => {
+        console.log(err);
+        if(this.userData.userConfigID != null) {
+          this.postTrackedActivities();
+        }
+      }
+    });
+  }
+
+  postTrackedActivities() {
+
+    const trackedActivities: TrackedActivitiesModel = {
+      id: 0,
+      steps: this.configData.steps,
+      calories: this.configData.calories,
+      water: this.configData.water,
+      sleepTime: this.configData.sleepTime,
+      training: this.configData.training
+    }
+
+    this.configService.postTrackedActivities(trackedActivities, this.userData.userConfigID!).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.getTrackedActivities();
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
+  }
+
+  getLevelData(userID: number) {
+    this.lvlService.getLevelData(userID).subscribe({
+      next: (lvlData) => {
+        console.log(lvlData);
+        this.lvlData.experience = lvlData.experience;
+        this.lvlData.currentLevel = lvlData.level;
+        this.lvlData.nextLevel = lvlData.level + 1;
+        this.lvlData.totalExperience = lvlData.totalExperience;
+        this.lvlData.nextLevelExperience = this.lvlData.getExpForLevel(lvlData.level + 1);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    });
   }
 
 }

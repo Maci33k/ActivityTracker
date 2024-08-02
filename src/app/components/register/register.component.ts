@@ -6,6 +6,9 @@ import { CommonModule } from '@angular/common';
 import { passwordMatchValidator } from 'src/app/validators/match-password';
 import { UserModel } from 'src/app/models/user.model';
 import { UserServiceService } from 'src/app/services/user-service.service';
+import { UserLevel } from 'src/app/models/user-level';
+import { LevelService } from 'src/app/services/level.service';
+import { LevelInfoService } from 'src/app/shared/level-info.service';
 
 @Component({
   selector: 'app-register',
@@ -60,7 +63,9 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(private router: Router,
               private fb: FormBuilder,
-              private userService: UserServiceService ) {}
+              private userService: UserServiceService,
+              private lvlService: LevelService,
+              private lvlData: LevelInfoService ) {}
 
   ngOnInit() {
     this.routerEventsSubscription = this.router.events.subscribe(event => {
@@ -120,9 +125,8 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit {
     this.userService.postUser(this.user).subscribe({
       next: response => {
         this.registeredUserId = response.userID;
-        console.log('Response from server:', response);
-        console.log("Przechwycone id: " + this.registeredUserId);
         this.sendEmail();
+        this.createLevelRecord();
       },
       error: error => {
         console.error('Error:', error);
@@ -139,6 +143,28 @@ export class RegisterComponent implements OnInit, OnDestroy, AfterViewInit {
         console.log(error);
       }
     });
+  }
+
+  createLevelRecord() {
+    const level: UserLevel =
+    {
+      Id: 0,
+      UserID: this.registeredUserId,
+      Experience: 0,
+      TotalExperience: 0,
+      NextLevelExperience: 0,
+      Level: 1
+    }
+    this.lvlService.postRecord(level).subscribe({
+      next: (res) => {
+        console.log(res);
+        this.lvlData.currentLevel = 1;
+        this.lvlData.nextLevel = 2;
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    })
   }
 }
 
